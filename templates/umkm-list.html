@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kategori UMKM || Nourish Connection</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <!-- Bulma CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+   <!-- style css -->
+    <link
+      href="{{ url_for('static', filename='assets/colors/colors.css') }}"
+      rel="stylesheet"
+    />
+    <link
+      href="{{ url_for('static', filename='assets/font-style/font-style.css') }}"
+      rel="stylesheet"
+    />
+
+    <!-- AJAX -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-1234567890abcdefg..."
+      crossorigin="anonymous"
+    />
+
+    <!-- Poppins Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@500;900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- CSS internal Start-->
+    <style>
+      .about-bg {
+        width: 100%;
+        height: 350px;
+        background-color: #2b3692;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        margin-top: 20px;
+      }
+      
+      .about-bg p {
+        color: white;
+      }
+
+      .is-truncated {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        -webkit-line-clamp: 2; /* Jumlah baris yang ingin ditampilkan */
+        max-width: 950px;
+      }
+
+    </style>
+    <!-- CSS internal Stop-->
+
+    <script>
+      $(document).ready(function () {
+        show_preview_umkm();
+      });
+      function show_preview_umkm() {
+        $("#list-umkm").empty();
+        $.ajax({
+          type: "GET",
+          url: "/show_preview_umkm",
+          data: {},
+          success: function (response) {
+            let cards = response["namausaha"];
+            console.log(cards);
+            for (let i = 0; i < cards.length-1; i++) { 
+              let username = cards[i]["username"];
+              let namaUsaha = cards[i]["nama_usaha"];
+              let daerah = cards[i]["daerah"];
+              let kategori = cards[i]["kategori"];
+              let deskripsi = cards[i]["deskripsi_usaha"];
+              let profile_pic_real = cards[i]["profile_pic_real"];
+              let cover = cards[i]["cover_pic_real"];
+              let status = cards[i]["status"];
+              let temp_html = `
+              
+                <article class="media" style="box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); border-radius: 10px;width: 100%;height: 200px; border-radius: 15px;">
+                  <div class="media-left">
+                    <div
+                    style="
+                      margin-top: 30px;
+                      margin-left:15px;
+                      width: 120px;
+                      height: 120px;
+                      border-width: 10px;
+                      border-color: white;
+                      border-radius: 50%;
+                      overflow: hidden;
+                      display: inline-block;
+                    "
+                    class="gambar"
+                  >
+                    <img
+                      src="{{ url_for('static', filename="") }}${profile_pic_real}"
+                      style="width: 100%; height: 100%; display: block"
+                      alt="profile photo"
+                      id="foto-profil"
+                    />
+                  </div>
+                  </div>
+                  <div class="media-content" style="margin-top: 30px;">
+                    <a href="/umkm_page" onclick="send_data('${namaUsaha}')">
+                      <div class="content">
+                        <p class="is-black">
+                          <strong class="is-title-card">${namaUsaha}</strong>
+                          <br><span style="opacity: 0.7;" class="is-subtitle">Kategori : ${kategori}</span>
+                          <br><span style="opacity: 0.7;" class="is-subtitle">Daerah : ${daerah}</span>
+                        </p>
+                        <p
+                          class="card-text is-truncated is-black mt-1"
+                          style="line-height: 1.3"
+                        >
+                        ${deskripsi}
+                        </p>
+                      </div>
+                    </a>
+                  </div>
+
+
+                </article>
+                  <br><br>
+                `;
+              $("#list-umkm").append(temp_html);
+            }
+          },
+        });
+      }
+      function send_data(namaUsaha) {
+        $.removeCookie("namaUsaha");
+        $.cookie("namaUsaha", namaUsaha); // Simpan namaUsaha yang dipilih dalam cookie
+      }
+      function delete_cookie(){
+        $.removeCookie("namaUsaha");
+      }
+    </script>
+  </head>
+
+  <body>
+    <!-- Navbar Start -->
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-items" href="/">
+          <img
+            src="{{url_for('static', filename='assets/logo/logo-text-blue.png')}}"
+            width="100"
+          />
+        </a>
+  
+        <a
+          role="button"
+          class="navbar-burger"
+          aria-label="menu"
+          aria-expanded="false"
+          data-target="navbarBasicExample"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+  
+      <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-end">
+          <div class="navbar-start">
+            <a class="navbar-item" href="/tentang_nourish"> Tentang Nourish </a>
+            <a class="navbar-item active" href="/umkm_list"> UMKM </a>
+            {% if 'username' in session %}
+            <a class="navbar-item" href="/diskusi"> Diskusi UMKM </a>
+            {% else %}
+            <a class="navbar-item active is-hidden" href="/"> Diskusi UMKM </a>
+            {% endif %}
+          </div>
+          <div class="navbar-items mr-3 ml-2 mt-1">
+            {% if 'username' in session %} {% if user_info is defined %}
+            <div class="buttons">
+              <a
+                class="button is-button-orange"
+                href="/user/{{ user_info.username }}"
+              >
+                Profil
+              </a>
+            </div>
+            {% endif %} {% else %}
+            <div class="buttons">
+              <a class="button is-button-orange" href="/login"> Masuk </a>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+    <!-- Navbar Stop -->
+
+    <!-- Kategori Description Start -->
+    <section class="about-bg columns is-align-items-center">
+      <div class="mr-2 ml-2 column is-flex has-text-centered">
+        <div class="is-flex-grow-1">
+          <p class="title is-1 is-spaced">Kategori UMKM</h1>
+          <p class="subtitle is-5">
+            Usaha Mikro, Kecil, dan Menengah (UMKM) di Indonesia dapat dikelompokkan ke dalam beberapa kategori yang berbeda, <br> 
+            mencakup beragam sektor usaha. Pada halaman ini, Anda akan menemukan berbagai macam UMKM yang menarik!<br>
+          </p>
+        </div>
+      </div>
+    </section>
+    <!-- Kategori Description Stop -->
+
+    <!-- UMKM list Start-->
+    <div id="list-umkm" class="box">
+      <article class="media">
+      </article>
+    </div>
+    <br>
+    <!-- UMKM list Stop--> 
+  
+    <!-- Footer Start -->
+    <footer class="my-5">
+        <div class="content has-text-centered">
+          <p class="is-blue">2023 Nourish Connection</p>
+        </div>
+      </footer>
+      <!-- Footer Stop -->
+</body>
+</html>
